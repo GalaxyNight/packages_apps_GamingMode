@@ -78,7 +78,6 @@ public class OverlayService extends Service {
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mGamingFBLayoutParams;
-    private WindowManager.LayoutParams mDanmakuLayoutParams;
 
     private GamingPerformanceView performanceController;
 
@@ -205,9 +204,16 @@ public class OverlayService extends Service {
         // Danmaku Container visibility
         if (mDanmakuContainer != null) {
             final boolean showDanmaku = configBundle.getBoolean(Constants.ConfigKeys.SHOW_DANMAKU, Constants.ConfigDefaultValues.SHOW_DANMAKU);
-            mDanmakuLayoutParams.width = showDanmaku ? WindowManager.LayoutParams.MATCH_PARENT : 0;
-            mDanmakuLayoutParams.height = showDanmaku ?  WindowManager.LayoutParams.WRAP_CONTENT : 0;
-            mWindowManager.updateViewLayout(mDanmakuContainer, mDanmakuLayoutParams);
+            WindowManager.LayoutParams danmakuParams = getBaseLayoutParams();
+            if (showDanmaku) {
+                danmakuParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                danmakuParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            } else {
+                danmakuParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                danmakuParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            }
+            mWindowManager.updateViewLayout(mDanmakuContainer, danmakuParams);
+            mDanmakuContainer.setVisibility(showDanmaku ? View.VISIBLE : View.GONE);
         }
 
         if (mGamingMenu != null) {
@@ -423,12 +429,12 @@ public class OverlayService extends Service {
     private void initDanmaku() {
         if (mWindowManager != null && mDanmakuContainer == null) {
             mDanmakuContainer = new FrameLayout(this);
-            mDanmakuLayoutParams = getBaseLayoutParams();
-            mDanmakuLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            mDanmakuLayoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            mDanmakuLayoutParams.gravity = Gravity.START | Gravity.TOP;
-            mDanmakuLayoutParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
-            mWindowManager.addView(mDanmakuContainer, mDanmakuLayoutParams);
+            WindowManager.LayoutParams danmakuParams = getBaseLayoutParams();
+            danmakuParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            danmakuParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            danmakuParams.gravity = Gravity.START | Gravity.TOP;
+            danmakuParams.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+            mWindowManager.addView(mDanmakuContainer, danmakuParams);
 
             mDanmakuManager = DanmakuManager.getInstance();
             mDanmakuManager.init(this, mDanmakuContainer);
