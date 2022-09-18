@@ -88,8 +88,6 @@ public class OverlayService extends Service {
     private float mFloatingButtonSize;
     private int mDeviceCutoutSize;
 
-    private boolean mPerformanceProfilesSupported;
-
     private enum CoordinateType {
         X,
         Y
@@ -159,8 +157,6 @@ public class OverlayService extends Service {
     }
 
     private void initView() {
-        mPerformanceProfilesSupported = getResources().getBoolean(
-                    com.android.internal.R.bool.config_gamingmode_performance);
         mWindowManager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         mFloatingButtonSize = getResources().getDimension(R.dimen.game_button_size);
         mDeviceCutoutSize = getDisplayCutoutSize();
@@ -259,11 +255,6 @@ public class OverlayService extends Service {
             mQSAppView = mGamingOverlayView.findViewById(R.id.gaming_qsapp);
 
             performanceController = mGamingOverlayView.findViewById(R.id.performance_controller);
-
-            if (!mPerformanceProfilesSupported) {
-                 performanceController.setVisibility(View.GONE);
-            }
-
             mGamingOverlayView.setOnClickListener(v -> showHideGamingMenu(0));
             mGamingMenu.getBackground().setAlpha(Constants.ConfigDefaultValues.MENU_OPACITY * 255 / 100);
         }
