@@ -304,9 +304,6 @@ public class OverlayService extends Service {
      * mode: 0=auto, 1=show, 2=hide
      */
     private void showHideGamingMenu(int mode) {
-        // reinit display metrics getter
-        ScreenUtil.init(this);
-
         if (mGamingOverlayView.getVisibility() == View.VISIBLE && mode != 1) {
             // hide
             mGamingOverlayView.setVisibility(View.GONE);
@@ -328,8 +325,11 @@ public class OverlayService extends Service {
             mGamingFloatingLayout.setVisibility(View.GONE);
             mGamingOverlayView.setGravity(gravity);
             ViewGroup.LayoutParams gamingMenuLayoutParams =  mGamingMenu.getLayoutParams();
-            gamingMenuLayoutParams.width = ScreenUtil.isPortrait() ?
-                    WindowManager.LayoutParams.MATCH_PARENT : WindowManager.LayoutParams.WRAP_CONTENT;
+            if (ScreenUtil.isPortrait()) {
+                gamingMenuLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            } else {
+                gamingMenuLayoutParams.width = ScreenUtil.getScreenWidth() / 2;
+            }
             mGamingMenu.setLayoutParams(gamingMenuLayoutParams);
 
             mGamingOverlayView.setVisibility(View.VISIBLE);
