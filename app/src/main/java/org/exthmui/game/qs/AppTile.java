@@ -19,10 +19,6 @@ package org.exthmui.game.qs;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.view.View;
-import android.widget.LinearLayout;
-
-import org.exthmui.game.R;
 
 public class AppTile extends TileBase {
 
@@ -31,11 +27,7 @@ public class AppTile extends TileBase {
         PackageManager pm = context.getPackageManager();
         try {
             ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
-            int size = (int) context.getResources().getDimension(R.dimen.app_qs_icon_size);
-            int padding = (int) context.getResources().getDimension(R.dimen.app_qs_icon_padding);
-            qsText.setVisibility(View.GONE);
-            qsIcon.setPadding(padding,padding,padding,padding);
-            qsIcon.setLayoutParams(new LinearLayout.LayoutParams(size, size));
+            qsText.setText(applicationInfo.loadLabel(pm));
             qsIcon.setImageDrawable(applicationInfo.loadIcon(pm));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
